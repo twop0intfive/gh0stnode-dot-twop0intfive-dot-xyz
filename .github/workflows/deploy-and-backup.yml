@@ -1,0 +1,59 @@
+name: Deploy and Backup Jekyll Site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Jekyll
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+      
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Build the site
+        run: bundle exec jekyll build
+
+      - name: Deploy to S3 (Public Hosting)
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_PUBLIC_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: './_site'
+
+      - name: Backup to S3 (Private Backup)
+        run: aws s3 sync ./_posts s3://my-jekyll-backup/_posts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Backup to Google Cloud Storage
+        run: |
+          echo ${{ secrets.GCS_KEY }} | base64 --decode > ${{ secrets.GCS_KEY_FILE }}
+          gsutil cp -r ./_posts gs://my-jekyll-gcs-backup/
+        env:
+          GCS_KEY: ${{ secrets.GCS_KEY }}
+          GCS_KEY_FILE: 'gcs-key.json'
+
+      - name: Send Discord notification
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" -d \
+          '{"content": "New blog post deployed and backed up successfully!"}' \
+          $WEBHOOK_URL
