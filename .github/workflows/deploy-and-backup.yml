@@ -37,7 +37,7 @@ jobs:
           SOURCE_DIR: './_site'
 
       - name: Backup to S3 (Private Backup)
-        run: aws s3 sync ./_posts s3://gh0stnode-aws-backup/ --acl private --delete
+        run: aws s3 sync ./_site s3://gh0stnode-aws-backup/ --acl private --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -45,7 +45,7 @@ jobs:
       - name: Backup to Google Cloud Storage
         run: |
           echo ${{ secrets.GCS_KEY }} | base64 --decode > ${{ secrets.GCS_KEY_FILE }}
-          gsutil cp -r ./_posts gs://gh0stnode-gcs-backup/
+          gsutil -m rsync -r ./_site gs://gh0stnode-gcs-backup/
         env:
           GCS_KEY: ${{ secrets.GCS_KEY }}
           GCS_KEY_FILE: 'gcs-key.json'
