@@ -30,7 +30,7 @@ twitter_username: ew
 github_username:  twop0intfive
 
 # Build settings
-theme: dark-poole
+theme: minima
 plugins:
   - jekyll-feed
 
