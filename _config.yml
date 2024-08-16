@@ -35,6 +35,7 @@ mastodon:
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-redirect-from
 
 minima:
   skin: solarized
