@@ -52,7 +52,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -d \
-          '{"content": "Deployment to primary S3 bucket successful!"}' \
+          '{"content": "✔️ Deployment to primary S3 bucket successful!"}' \
           $WEBHOOK_URL
 
     #  - name: List S3 (Private Backup) Bucket Contents
@@ -74,7 +74,7 @@ jobs:
     #      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     #    run: |
     #      curl -H "Content-Type: application/json" -d \
-    #      '{"content": "Deployment to backup S3 bucket successful!"}' \
+    #      '{"content": "✔️ Deployment to backup S3 bucket successful!"}' \
     #      $WEBHOOK_URL
 
     # DEPLOY TO GCS 
@@ -92,7 +92,7 @@ jobs:
     #      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     #    run: |
     #      curl -H "Content-Type: application/json" -d \
-    #      '{"content": "Deployment to backup S3 bucket successful!"}' \
+    #      '{"content": "✔️ Deployment to backup S3 bucket successful!"}' \
     #      $WEBHOOK_URL
 
     # DISCORD NOTIFY - ALL JOBS COMPLETE
@@ -101,5 +101,5 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -d \
-          '{"content": "New blog post deployed to primary S3 successfully, but get backups working!"}' \
+          '{"content": "✅ New blog post deployed to primary S3 successfully, but get backups working!"}' \
           $WEBHOOK_URL
