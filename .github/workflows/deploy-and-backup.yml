@@ -26,6 +26,16 @@ jobs:
       - name: Build the site
         run: bundle exec jekyll build
 
+    # DISCORD NOTIFY - INITIAL BUILD COMPLETE
+      - name: Send Discord notification
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" -d \
+          '{"content": "Initial build complete. Deploying..."}' \
+          $WEBHOOK_URL
+
+    # DEPLOY TO AWS
       - name: Deploy to S3 (Public Hosting)
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
@@ -36,18 +46,38 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: './_site'
 
+    # DISCORD NOTIFY - S3 PRIMARY
+      - name: Send Discord notification
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" -d \
+          '{"content": "Deployment to primary S3 bucket successful!"}' \
+          $WEBHOOK_URL
+
     #  - name: List S3 (Private Backup) Bucket Contents
     #    run: aws s3 ls s3://gh0stnode-aws-backup/
     #    env:
     #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+    # DEPLOY TO AWS BACKUP BUCKET
     #  - name: Backup to S3 (Private Backup)
     #    run: aws s3 sync ./_site s3://gh0stnode-aws-backup/ --acl private --delete --debug
     #    env:
     #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+    # DISCORD NOTIFY - S3 PRIMARY
+    #  - name: Send Discord notification
+    #    env:
+    #      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    #    run: |
+    #      curl -H "Content-Type: application/json" -d \
+    #      '{"content": "Deployment to backup S3 bucket successful!"}' \
+    #      $WEBHOOK_URL
+
+    # DEPLOY TO GCS 
     #  - name: Backup to Google Cloud Storage
     #    run: |
     #      echo ${{ secrets.GCS_KEY }} | base64 --decode > ${{ secrets.GCS_KEY_FILE }}
@@ -56,6 +86,16 @@ jobs:
     #      GCS_KEY: ${{ secrets.GCS_KEY }}
     #      GCS_KEY_FILE: 'gcs-key.json'
 
+    # DISCORD NOTIFY - S3 PRIMARY
+    #  - name: Send Discord notification
+    #    env:
+    #      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    #    run: |
+    #      curl -H "Content-Type: application/json" -d \
+    #      '{"content": "Deployment to backup S3 bucket successful!"}' \
+    #      $WEBHOOK_URL
+
+    # DISCORD NOTIFY - ALL JOBS COMPLETE
       - name: Send Discord notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
