@@ -32,7 +32,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -d \
-          '{"content": "Initial build complete. Deploying..."}' \
+          '{"content": "👻 gh0stnode.twop0intfive.xyz | Initial build complete. Deploying..."}' \
           $WEBHOOK_URL
 
     # DEPLOY TO AWS
