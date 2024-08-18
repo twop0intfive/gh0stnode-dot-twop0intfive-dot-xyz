@@ -32,12 +32,16 @@ mastodon:
   instance: corteximplant.com
 
 # Build settings
-theme: minima
+theme: jekyll-theme-console
+style: hacker
+#listen_for_clients_preferred_style: true # false (default) or true
+header_pages:
+ - index.markdown
+ - about.md 
+footer: '<a href="https://corteximplant.com/@twop0intfive">@twop0intfive</a>'
+
 plugins:
   - jekyll-feed
-
-minima:
-  skin: solarized
 
 # Exclude from processing.
 # The following items will not be processed, by default.
