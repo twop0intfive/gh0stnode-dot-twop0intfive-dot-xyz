@@ -54,9 +54,9 @@ jobs:
           curl -H "Content-Type: application/json" -d \
           '{"content": "✔️1️ Deployment to primary S3 bucket successful!"}' \
           $WEBHOOK_URL
-
+    
     # DISCORD NOTIFY - backup S3 ls command
-        - name: List S3 (Private Backup) Bucket Contents
+      - name: List S3 (Private Backup) Bucket Contents
         run: aws s3 ls s3://gh0stnode-aws-backup/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
