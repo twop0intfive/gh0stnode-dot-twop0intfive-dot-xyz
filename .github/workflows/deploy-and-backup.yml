@@ -55,11 +55,12 @@ jobs:
           '{"content": "✔️1️ Deployment to primary S3 bucket successful!"}' \
           $WEBHOOK_URL
 
-         #  - name: List S3 (Private Backup) Bucket Contents
-    #    run: aws s3 ls s3://gh0stnode-aws-backup/
-    #    env:
-    #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    # DISCORD NOTIFY - backup S3 ls command
+        - name: List S3 (Private Backup) Bucket Contents
+        run: aws s3 ls s3://gh0stnode-aws-backup/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Sync to AWS S3 (Backup Bucket)
         run: aws s3 sync _site/ s3://gh0stnode-aws-backup/ --delete
