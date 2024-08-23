@@ -82,7 +82,6 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" -d \
           '{"content": "⚠️ Deployment to backup S3 bucket not yet fully implemented!"}' \
-    
           $WEBHOOK_URL
 
     # DEPLOY TO GCS 
