@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Test Post"
+title: "2.0 update"
 date: 2024-08-18 18:20:00 -0500
 categories: update
 ---
