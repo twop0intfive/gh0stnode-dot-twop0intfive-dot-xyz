@@ -16,8 +16,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'  # Ensure Ruby 3.1 or newer is used
-      
+          ruby-version: '3.1'
+
       - name: Install dependencies
         run: |
           gem install bundler
@@ -26,8 +26,7 @@ jobs:
       - name: Build the site
         run: bundle exec jekyll build
 
-    # DISCORD NOTIFY - INITIAL BUILD COMPLETE
-      - name: Send Discord notification
+      - name: Send Discord notification - Build Complete
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
@@ -35,7 +34,7 @@ jobs:
           '{"content": "👻 gh0stnode.twop0intfive.xyz | Initial build complete. Deploying..."}' \
           $WEBHOOK_URL
 
-    # DEPLOY TO AWS
+      # DEPLOY TO AWS S3
       - name: Deploy to S3 (Public Hosting)
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
@@ -46,67 +45,94 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: './_site'
 
-    # DISCORD NOTIFY - S3 PRIMARY
-      - name: Send Discord notification
+      - name: Send Discord notification - S3 Deployed
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -d \
           '{"content": "✔️1️ Deployment to primary S3 bucket successful!"}' \
           $WEBHOOK_URL
-    
-    # DISCORD NOTIFY - backup S3 ls command
-    #  - name: List S3 (Private Backup) Bucket Contents
-    #    run: aws s3 ls s3://gh0stnode-aws-backup/
-    #    env:
-    #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    #  - name: Sync to AWS S3 (Backup Bucket)
-    #    run: aws s3 sync _site/ s3://gh0stnode-aws-backup/ --delete
-    #    env:
-    #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # DEPLOY TO AZURE BLOB STORAGE (Commented out)
+      # - name: Azure Login
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # DEPLOY TO AWS BACKUP BUCKET
-    #  - name: Backup to S3 (Private Backup)
-    #    run: aws s3 sync ./_site s3://gh0stnode-aws-backup/ --acl private --delete --debug
-    #    env:
-    #      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # - name: Deploy to Azure Blob Storage
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       az storage blob upload-batch --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} -d '$web' -s ./_site --overwrite
 
-    # DISCORD NOTIFY - S3 BACKUP. Swap out content for '{"content": "✔️2️ Deployment to backup S3 bucket successful!"}' \
-      - name: Send Discord notification
+      # - name: Send Discord notification - Azure Deployed
+      #   env:
+      #     WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      #   run: |
+      #     curl -H "Content-Type: application/json" -d \
+      #     '{"content": "✔️2️ Deployment to Azure Blob Storage successful!"}' \
+      #     $WEBHOOK_URL
+
+      # DEPLOY TO GOOGLE CLOUD STORAGE (Commented out)
+      # - name: Authenticate to Google Cloud
+      #   uses: google-github-actions/auth@v1
+      #   with:
+      #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # - name: Set up Cloud SDK
+      #   uses: google-github-actions/setup-gcloud@v1
+
+      # - name: Deploy to Google Cloud Storage
+      #   run: |
+      #     gsutil -m rsync -d -r ./_site gs://${{ secrets.GCS_BUCKET_NAME }}
+
+      # - name: Send Discord notification - GCS Deployed
+      #   env:
+      #     WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      #   run: |
+      #     curl -H "Content-Type: application/json" -d \
+      #     '{"content": "✔️3️ Deployment to Google Cloud Storage successful!"}' \
+      #     $WEBHOOK_URL
+
+      # DEPLOY TO CLOUDFLARE PAGES (Placeholder)
+      # - name: Deploy to Cloudflare Pages
+      #   uses: cloudflare/pages-action@v1
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     projectName: your-project-name
+      #     directory: ./_site
+      #     gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Send Discord notification - Cloudflare Pages Deployed
+      #   env:
+      #     WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      #   run: |
+      #     curl -H "Content-Type: application/json" -d \
+      #     '{"content": "✔️4️ Deployment to Cloudflare Pages successful!"}' \
+      #     $WEBHOOK_URL
+
+      # DEPLOY TO VERCEL (Placeholder)
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v20
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     working-directory: ./_site
+
+      # - name: Send Discord notification - Vercel Deployed
+      #   env:
+      #     WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      #   run: |
+      #     curl -H "Content-Type: application/json" -d \
+      #     '{"content": "✔️5️ Deployment to Vercel successful!"}' \
+      #     $WEBHOOK_URL
+
+      - name: Send Discord notification - All Jobs Complete
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -d \
-          '{"content": "⚠️ Deployment to backup S3 bucket not yet fully implemented!"}' \
-          $WEBHOOK_URL
-
-    # DEPLOY TO GCS 
-    #  - name: Backup to Google Cloud Storage
-    #    run: |
-    #      echo ${{ secrets.GCS_KEY }} | base64 --decode > ${{ secrets.GCS_KEY_FILE }}
-    #      gsutil -m rsync -r ./_site gs://gh0stnode-gcs-backup/
-    #    env:
-    #      GCS_KEY: ${{ secrets.GCS_KEY }}
-    #      GCS_KEY_FILE: 'gcs-key.json'
-
-    # DISCORD NOTIFY - GCS. Swap out content for '{"content": "✔️2️ Deployment to backup S3 bucket successful!"}' \
-      - name: Send Discord notification
-        env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          curl -H "Content-Type: application/json" -d \
-          '{"content": "⚠️ Deployment to backup GCS bucket not yet fully implemented!"}' \
-          $WEBHOOK_URL
-
-    # DISCORD NOTIFY - ALL JOBS COMPLETE
-      - name: Send Discord notification
-        env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          curl -H "Content-Type: application/json" -d \
-          '{"content": "✅ New blog post deployed to primary S3 successfully, but get backups working!"}' \
+          '{"content": "✅ New blog post deployed to S3 successfully! Azure, GCS, Cloudflare Pages, and Vercel deployments not yet implemented."}' \
           $WEBHOOK_URL
