@@ -94,6 +94,18 @@ jobs:
       #     '{"content": "✔️3️ Deployment to Google Cloud Storage successful!"}' \
       #     $WEBHOOK_URL
 
+      # Deployment job
+        deploy:
+          environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+          runs-on: ubuntu-latest
+          needs: build
+          steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
+
       # DEPLOY TO CLOUDFLARE PAGES (Placeholder)
       # - name: Deploy to Cloudflare Pages
       #   uses: cloudflare/pages-action@v1
