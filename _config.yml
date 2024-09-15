@@ -32,7 +32,7 @@ mastodon:
   instance: corteximplant.com
 
 # Build settings
-theme: jekyll-theme-console
+remote_theme: b2a3e8/jekyll-theme-console
 style: hacker
 #listen_for_clients_preferred_style: true # false (default) or true
 header_pages:
