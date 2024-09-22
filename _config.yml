@@ -26,7 +26,7 @@ title: gh0stnode | twop0intfive.xyz
 description: >- # this means to ignore newlines until "baseurl:"
   twop0intfiveのcloud blogクラウドブローグ
 baseurl: "/gh0stnode-dot-twop0intfive-dot-xyz" # the subpath of your site, e.g. /blog
-url: "https://twop0intfive.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
 mastodon: 
 - username: twop0intfive
   instance: corteximplant.com
