@@ -3,7 +3,7 @@ twop0intfiveのcloud blogクラウドブローグ
 
 
 ## Creating a New Blog Post on gh0stnode.twop0intfive.xyz
-This document outlines the step-by-step process for creating a new blog post on https://gh0stnode.twop0intfive.xyz. 
+This document outlines the step-by-step process for creating a new blog post on https://gh0stnode.twop0intfive.xyz. Its intended audience is myself. 
 
 Follow these instructions carefully to ensure your post is published correctly.
 
